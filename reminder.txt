@@ -1,0 +1,4 @@
+// NULL is just an indicator that the next pointer is non-existent, so don't be much bothered by that
+// Global : stores variables
+// Stack: stores functions and local variables
+// Heap: Free memory
