@@ -39,8 +39,15 @@ void push(int x){
 
 void delete(int position){
     node *temp = head;
+    if(position == 1){
+        head = head->next;
+        free(temp); // Deletes the Head
+        return;
+    }
     for(int i = 1; i != position-1; i++)temp = temp->next;
-    temp->next = temp->next->next; 
+    node*temp2 = temp->next;
+    temp->next = temp2->next;
+    free(temp2); // Deletes the current node from heap 
 }
 
 void print(){

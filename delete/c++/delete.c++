@@ -37,8 +37,15 @@ void push(int x){
 
 void deleteNode(int position){
     node *temp = head;
+    if(position == 1){
+        head = head->next;
+        free(temp);
+        return;
+    }
     for(int i = 1; i < position-1; i++) temp = temp->next;
-    temp->next = temp->next->next;
+    node *temp2 = temp->next;
+    temp->next = temp2->next;
+    free(temp2);
 }
 
 void print(){
