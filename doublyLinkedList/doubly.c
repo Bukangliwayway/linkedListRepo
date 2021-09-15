@@ -14,18 +14,12 @@ void push(int data);
 void replace(int position, int data);
 void reverse();
 void print(node *temp);
-void printReverse();
+void printReverse(node *temp);
 int positionOf(int data);
-node unshift();
-node pop();
+int unshift();
+int pop();
 
 int main(){
-    int num;
-    push(1);
-    push(2);
-    push(3);
-    push(4);
-    push(5);
     print(head);
 }
 
@@ -54,11 +48,65 @@ void push(int data){
     temp2->next = temp;
 }
 
+void reverse(){
+    node *temp = head, *next = NULL;
+    while(1){
+        next = temp->next;
+        temp->next = temp->prev;
+        temp->prev = next;
+        if(next == NULL) break; 
+        temp = next;
+    }
+    head = temp;
+}
+
+void replace(int position, int data){
+    node *temp = head;
+    for(int i = 1; temp!= NULL; i++)
+        if(i == position){
+            temp->data = data;
+            return;
+        } 
+        else temp = temp->next;
+    printf("\nInvalid Position!\n");
+}
+
 void print(node *temp){
     if(temp == NULL) return;
     printf("%d\n", temp->data);
     print(temp->next);
 }
 
+void printReverse(node *temp){
+    if(temp == NULL) return;
+    printReverse(temp->next);
+    printf("%d\n", temp->data);
+}
 
+int positionOf(int data){
+    node *temp = head;
+    for(int i = 1; temp!= NULL; i++)
+        if(temp->data == data) return i;
+        else temp = temp->next;
+    printf("\n%d is not in the list\n", data);
+    return 0;
+}
+
+int unshift(){
+    node *temp = head;
+    int data = head->data;
+    head = head->next;
+    head->prev = NULL;
+    free(temp);
+    return data;
+}
+
+int pop(){
+    node *temp = head;
+    while(temp->next != NULL) temp = temp->next;
+    temp->prev = NULL;
+    int data = temp->data;
+    free(temp);
+    return data;
+}
 
