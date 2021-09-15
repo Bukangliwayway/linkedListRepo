@@ -2,3 +2,11 @@
 // Global : stores variables
 // Stack: stores functions and local variables
 // Heap: Free memory
+
+//Stack has 4 functions:
+// Define: #include<stack>
+// Declare: stack<data type> variable_name; //ex: stack<node *> list; 
+//.push(data type)  //Adds new data into list/stack
+//.pop()            //Clear the top of the stack
+//.empty()          //Check if the stack still has top
+//.top()            //Return the top of the stack
