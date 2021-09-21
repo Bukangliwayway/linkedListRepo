@@ -5,29 +5,41 @@
 #include <ctype.h>
 using namespace std;
 
+typedef struct node{
+    float num;
+    struct node *next;
+}node;
+
 bool checkParenthesis(string str);
 bool toPair(char top, char compare);
 string convertEq(string eq);
-int* saveEq(string eq);
+void push(float x);
+void printNums();
+void saveEq(string eq);
 bool precedence(char top, char compare);
 bool openParenthesis(char open);
 char closingEquivalent(char open);
 string postFix(string str);
-int calculation(string eq, int *nums);
-int solve(int a, int b, char op);
+float traverse(int position);
+float calculation(string eq);
+float solve(float a, float b, char op);
+
+node *head = NULL;
 
 int main(){
     system("cls");
-    string eq = "10+11+(12*13+14)";
+    float result = 0;
+    string eq = "6/2(2+1)";
     string post = "Invalid";
-    int *arr, result = 0;
     string in = convertEq(eq); 
+
     if(!checkParenthesis(in)) cout << "Invalid Input!" << endl;
     else{
+        saveEq(eq);
         post = postFix(in);
-        arr = saveEq(eq);
-        result = calculation(post,arr);
+        result = calculation(post);
     }
+
     cout << "Equation: " << eq << endl; 
     cout << "Infix:    " << in << endl;
     cout << "Postfix:  " << post << endl;
@@ -69,11 +81,13 @@ string convertEq(string eq){
     stack<char>list; 
     for(int i = 0 ; i < eq.length(); i++){
         if(isdigit(eq[i])) list.push(eq[i]);
-        else if(list.empty())str += eq[i];
+        else if(list.empty()) str += eq[i];    
         else{
             str += variable;
+            if(eq[i] == '(' && isdigit(eq[i-1])) str += '*';
             str += eq[i];
             variable++;
+            if(eq[i] == ')' && (eq[i+1] == '(' || isdigit(eq[i+1]))) str += '*';
             while(!list.empty())list.pop();
         }
     }
@@ -81,20 +95,43 @@ string convertEq(string eq){
     return str;
 }
 
-int* saveEq(string eq){
-    int *arr;
-    int count = 0;
+void push(float x){
+    node *temp, *traverse = head;
+    temp = new node();
+    temp->next = NULL;
+    temp->num = x;
+    if(head == NULL){
+        temp->next = head;
+        head = temp;
+        return;
+    }
+    while(traverse->next != NULL) traverse = traverse->next;
+    traverse->next = temp;
+    traverse = temp;
+}
+
+void printNums(){
+    node *temp = head;
+    while(temp != NULL){
+        cout << temp->num << ' ';
+        temp = temp->next;
+    }
+}
+
+ void saveEq(string eq){
+    float save;
     string num;
     for(int i = 0; i < eq.length(); i++)
         if(isdigit(eq[i])) num += eq[i];
         else if(!num.empty()){
-            arr[count] = strtol(num.c_str(), NULL, 10);
-            count++;
+            save = strtof(num.c_str(), NULL);
+            push(save);
             num.clear();
-        }else continue;
-    arr[count] = strtol(num.c_str(), NULL, 10); //Save the last instance
-    return arr;
+        }
+    save = strtof(num.c_str(), NULL); //Save the last instance
+    push(save);
 }
+
 
 bool higherPrecedence(char top, char compare){
     if(top == '+' || top == '-') 
@@ -148,9 +185,18 @@ string postFix(string str){
     return postStr;
 }
 
-int calculation(string eq, int *nums){
-    int a,b, result;    
-    stack<int>list;
+float traverse(int position){
+    node *temp = head;
+    for(int i = 0; i < position; i++){
+        temp = temp->next;
+    }
+    // cout << temp->num << ":" << position << endl;
+    return temp->num;
+}
+
+float calculation(string eq){
+    float a,b, result;    
+    stack<float>list;
     for(int i = 0 ; i < eq.length(); i++)
         if(eq[i] == '*' || eq[i] == '/' || eq[i] == '+' || eq[i] == '-'){
             b = list.top();
@@ -158,14 +204,16 @@ int calculation(string eq, int *nums){
             a = list.top();
             list.pop();
             try {result = solve(a,b,eq[i]);}
-            catch(runtime_error& e){cout << "Exception Occudred: " << endl << e.what();}
+            catch(runtime_error& e){
+                cout << "Exception Occured: " << endl << e.what();
+                return 0;
+            }
             list.push(result);
-        }else{
-            list.push(nums[eq[i]-'A']);            
-        }
+        }else list.push(traverse(eq[i]-'A'));            
     return result;
 }
-int solve(int a, int b, char op){
+
+float solve(float a, float b, char op){
     switch(op){
         case '+': return a + b;
         case '-': return a - b;
