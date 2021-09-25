@@ -1,4 +1,5 @@
 #include<iostream>
+#include<queue>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ node* root = NULL;
 int height(node *root);
 node* insert(node* root, int data);
 node* createNode(int data);
+void breadthFirst();
 void depthFirst(node *root);
 
 int main(){
@@ -23,6 +25,8 @@ int main(){
     root = insert(root, 4);
     root = insert(root, 8);
     root = insert(root, 6);
+    breadthFirst();
+    cout << endl;
     depthFirst(root);
 }
 
@@ -43,10 +47,24 @@ node* insert(node *root, int data){
 void depthFirst(node *root){
     if(root == NULL) return;
     //pucha mema lang tlaga to men gulat ako eto na itotopic bigla
-    // Preorder : DLR
-    // Inorder : DLDR >> gives you sorted list of
-    // Postorder : LRD
+    // Preorder : DLR >> Letter 'G' Movement 
+    // Inorder : LDR >> gives you sorted list of tree (if BST) // Character '^' movement
+    // Postorder : LRD >> Character '>' Movement (starts from lowest left to right then center)
     depthFirst(root->left);
-    depthFirst(root->right);
     cout << root->data << endl;
+    depthFirst(root->right);
 }
+
+void breadthFirst(){
+    node *temp = root;
+    queue <node *> list;
+    list.emplace(temp);
+    while(!list.empty()){
+        if(temp->left != NULL) list.emplace(temp->left);
+        if(temp->right != NULL) list.emplace(temp->right);
+        cout << list.front()->data << endl;
+        list.pop();
+        temp = list.front();
+    }
+}
+
