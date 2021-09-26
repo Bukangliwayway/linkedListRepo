@@ -44,7 +44,7 @@ int height(node *root){
     and determining the larger branch with max func.
     - The +1 after max compare is the incrementor that is
     responsible for determining the height of the specific branch.
-    - The return -1 sets the height of the NULL node to 0
+    - The return -1 sets the height of the NULL node or leaf to 0
     when added or counted by the +1 incrementor at max compare
     */
     if(root == NULL) return -1;
